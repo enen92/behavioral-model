@@ -109,12 +109,19 @@ MatchTableAbstract::apply_action(Packet *pkt) {
   pkt->set_entry_index(
       hit ? (handle & 0x00ffffff) : Packet::INVALID_ENTRY_INDEX);
 
+  BMLOG_DEBUG_PKT(*pkt, "looking for direct meters");
+  BMLOG_DEBUG_PKT(*pkt, "hit '{}'", hit);
+  BMLOG_DEBUG_PKT(*pkt, "with meters", with_meters);
+  
   if (hit && with_meters) {
     // we only execute the direct meter if hit, should we have a miss meter?
     Field &target_f = pkt->get_phv()->get_field(
         meter_target_header, meter_target_offset);
     Meter &meter = match_unit_->get_meter(handle);
+    BMLOG_DEBUG_PKT(*pkt, "executing meter");
     target_f.set(meter.execute(*pkt));
+  } else {
+    BMLOG_DEBUG_PKT(*pkt, "Table '{}': no meter to execute", get_name());
   }
 
   // we're holding the lock for this...
