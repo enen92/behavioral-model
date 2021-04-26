@@ -111,7 +111,7 @@ MatchTableAbstract::apply_action(Packet *pkt) {
 
   BMLOG_DEBUG_PKT(*pkt, "looking for direct meters");
   BMLOG_DEBUG_PKT(*pkt, "hit '{}'", hit);
-  BMLOG_DEBUG_PKT(*pkt, "with meters", with_meters);
+  BMLOG_DEBUG_PKT(*pkt, "with meters '{}'", with_meters);
   
   if (hit && with_meters) {
     // we only execute the direct meter if hit, should we have a miss meter?
