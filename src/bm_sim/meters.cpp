@@ -68,8 +68,12 @@ Meter::reset_rates() {
 Meter::color_t
 Meter::execute(const Packet &pkt, color_t pre_color) {
   color_t packet_color = 0;
+  BMLOG_DEBUG_PKT(pkt, "Actually executing meter");
 
-  if (!configured) return packet_color;
+  if (!configured) {
+    BMLOG_DEBUG_PKT(pkt, "Returning as meter not configured");
+    return packet_color;
+  }
 
   clock::time_point now = clock::now();
   int64_t micros_since_init = duration_cast<ticks>(now - time_init).count();
@@ -100,7 +104,7 @@ Meter::execute(const Packet &pkt, color_t pre_color) {
       rate.tokens -= input;
     }
   }
-
+  BMLOG_DEBUG_PKT(pkt, "Returning from meter execution {}", packet_color);
   return std::max(pre_color, packet_color);
 }
 
