@@ -96,14 +96,21 @@ Meter::execute(const Packet &pkt, color_t pre_color) {
     rate.tokens = std::min(rate.tokens + new_tokens, rate.burst_size);
 
     size_t input = (type == MeterType::PACKETS) ? 1u : pkt.get_ingress_length();
-
+    
+    BMLOG_DEBUG_PKT(pkt, "Meter rate is {}", rate.info_rate);
+    BMLOG_DEBUG_PKT(pkt, "Meter rate color is {}", rate.color);
+    BMLOG_DEBUG_PKT(pkt, "Meter rate tokens is {}", rate.tokens);
+    BMLOG_DEBUG_PKT(pkt, "Input is {}", input);
+    
     if (rate.tokens < input) {
       packet_color = rate.color;
       break;
     } else {
       rate.tokens -= input;
+      BMLOG_DEBUG_PKT(pkt, "Meter signal");
     }
   }
+  BMLOG_DEBUG_PKT(pkt, "Pre color {}", pre_color);
   BMLOG_DEBUG_PKT(pkt, "Returning from meter execution {}", packet_color);
   return std::max(pre_color, packet_color);
 }
